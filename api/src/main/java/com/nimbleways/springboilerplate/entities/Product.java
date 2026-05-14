@@ -5,6 +5,8 @@ import lombok.*;
 import java.time.LocalDate;
 
 import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 @Entity
 @Getter
@@ -24,8 +26,9 @@ public class Product {
     @Column(name = "available")
     private Integer available;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private String type;
+    private ProductType type;
 
     @Column(name = "name")
     private String name;

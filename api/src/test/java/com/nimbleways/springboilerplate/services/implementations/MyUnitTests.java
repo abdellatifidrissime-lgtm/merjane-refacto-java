@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import com.nimbleways.springboilerplate.entities.ProductType;
 
 import java.time.LocalDate;
 
@@ -32,7 +33,7 @@ public class MyUnitTests {
     @Test
     void should_notify_delay_when_normal_product_has_lead_time() {
         // GIVEN
-        Product product = new Product(null, 15, 0, "NORMAL", "RJ45 Cable", null, null, null);
+        Product product = new Product(null, 15, 0, ProductType.NORMAL, "RJ45 Cable", null, null, null);
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
         // WHEN
@@ -49,7 +50,7 @@ public class MyUnitTests {
     @Test
     void should_set_available_to_zero_and_notify_when_lead_time_exceeds_season_end() {
         // GIVEN — leadTime=10j, saison finit dans 5j → réappro impossible
-        Product product = new Product(null, 10, 5, "SEASONAL", "Watermelon",
+        Product product = new Product(null, 10, 5, ProductType.SEASONAL, "Watermelon",
                 null, LocalDate.now().minusDays(1), LocalDate.now().plusDays(5));
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
@@ -64,7 +65,7 @@ public class MyUnitTests {
     @Test
     void should_notify_out_of_stock_when_season_has_not_started_yet() {
         // GIVEN — saison commence dans 30j
-        Product product = new Product(null, 5, 0, "SEASONAL", "Grapes",
+        Product product = new Product(null, 5, 0, ProductType.SEASONAL, "Grapes",
                 null, LocalDate.now().plusDays(30), LocalDate.now().plusDays(120));
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
@@ -80,7 +81,7 @@ public class MyUnitTests {
     @Test
     void should_decrease_stock_when_expirable_product_is_valid_and_in_stock() {
         // GIVEN — expire demain, stock > 0
-        Product product = new Product(null, 5, 10, "EXPIRABLE", "Butter",
+        Product product = new Product(null, 5, 10, ProductType.EXPIRABLE, "Butter",
                 LocalDate.now().plusDays(1), null, null);
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
@@ -96,7 +97,7 @@ public class MyUnitTests {
     void should_notify_and_zero_stock_when_expirable_product_is_expired() {
         // GIVEN — expiré hier
         LocalDate yesterday = LocalDate.now().minusDays(1);
-        Product product = new Product(null, 5, 3, "EXPIRABLE", "Milk",
+        Product product = new Product(null, 5, 3, ProductType.EXPIRABLE, "Milk",
                 yesterday, null, null);
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
@@ -111,7 +112,7 @@ public class MyUnitTests {
     @Test
     void should_notify_and_zero_stock_when_expirable_product_has_no_stock() {
         // GIVEN — pas expiré mais stock = 0
-        Product product = new Product(null, 5, 0, "EXPIRABLE", "Yogurt",
+        Product product = new Product(null, 5, 0, ProductType.EXPIRABLE, "Yogurt",
                 LocalDate.now().plusDays(5), null, null);
         Mockito.when(productRepository.save(product)).thenReturn(product);
 
